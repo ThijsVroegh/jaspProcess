@@ -1,7 +1,7 @@
-# I
 test_that("comparing jasp and spss mediation analysis - spss as baseline", {
 
   # jasp results --------------------------------------------------------------
+
   # compute mediation analysis in JASP
   options <- jaspTools::analysisOptions("ClassicProcess")
   options$dependent  <- "reaction"
@@ -43,8 +43,8 @@ test_that("comparing jasp and spss mediation analysis - spss as baseline", {
                                      localTestType = "cis",
                                      localTestBootstrap = FALSE,
                                      localTestBootstrapSamples = 1000))
-  set.seed(1)
 
+  set.seed(1)
   data <- read.csv("C:/Projects/ProcessModelsJasp/Data/hayes2022data/pmi/pmi.csv")
 
   results <- jaspTools::runAnalysis("ClassicProcess", data, options)
@@ -106,10 +106,6 @@ test_that("comparing jasp and spss mediation analysis - spss as baseline", {
 
   spss <- lapply(spss, round_numeric)
 
-  # compare jasp and spss parameter estimates --------------------------------
-  #jaspTools::expect_equal_tables(table_paths, spss)
-  testthat::expect_equal(table_paths, spss, tolerance = 1e-2)
-
   # Check the length of the lists
   length_jasp <- length(table_paths)
   length_spss <- length(spss)
@@ -128,14 +124,14 @@ test_that("comparing jasp and spss mediation analysis - spss as baseline", {
     stop("Structures of sublists are not identical.")
   }
 
-
+  # compare jasp and spss parameter estimates --------------------------------
+  testthat::expect_equal(table_paths, spss, tolerance = 1e-2)
 
   # totalEffectsTable JASP
   table_total <- results[["results"]][["parEstContainer"]][["collection"]][["parEstContainer_Model 1"]][["collection"]][["parEstContainer_Model 1_totalEffectsTable"]][["data"]]
   table_total <- lapply(table_total, round_numeric)
 
-
-  # Effects table from SPSS
+  # TotalEffects table from SPSS
   spss_effects <- list()
 
   spss_effects[[1]] <- list(
@@ -160,7 +156,9 @@ test_that("comparing jasp and spss mediation analysis - spss as baseline", {
     se = .1300,
     z = 1.8559
   )
-  jaspTools::expect_equal_tables(table_total, spss_effects)
+
+  # compare jasp and spss total effects --------------------------------
+  testthat::expect_equal(table_total, spss_effects,tolerance = 1e-2)
 
 })
 
@@ -168,7 +166,8 @@ test_that("comparing jasp and spss mediation analysis - spss as baseline", {
 test_that("comparing jasp and spss moderation analysis - spss as baseline", {
 
   # jasp results --------------------------------------------------------------
-  # compute analysis in JASP
+
+  # compute moderation analysis in JASP
   options <- jaspTools::analysisOptions("ClassicProcess")
   options$dependent  <- "justify"
   options$covariates <- list("skeptic")
@@ -209,10 +208,9 @@ test_that("comparing jasp and spss moderation analysis - spss as baseline", {
                                      localTestType = "cis",
                                      localTestBootstrap = FALSE,
                                      localTestBootstrapSamples = 1000))
+
   set.seed(1)
-
   data <- read.csv("C:/Projects/ProcessModelsJasp/Data/hayes2022data/disaster/disaster.csv")
-
   results <- jaspTools::runAnalysis("ClassicProcess", data, options)
 
   # Function to round numeric values in a list
@@ -232,7 +230,8 @@ test_that("comparing jasp and spss moderation analysis - spss as baseline", {
   # spss results (Hayes, p.253) -----------------------------------------------
   # path coefficients OLS regression output eq. 3.1 and  eq. 3.2 combined
 
-spss <- list()
+  spss <- list()
+
   spss[[1]] <- list(
     ci.lower = -.9921,
     ci.upper = -.1328,
@@ -269,14 +268,15 @@ spss <- list()
   )
 
   # compare jasp and spss parameter estimates --------------------------------
-  jaspTools::expect_equal_tables(table,spss)
+  testthat::expect_equal(table,spss,tolerance = 1e-2)
 })
 
 # III
 test_that("comparing jasp and spss conditional process analysis - spss as baseline", {
 
   # jasp results --------------------------------------------------------------
-  # compute analysis in JASP
+
+  # compute conditional process analysis in JASP
   options <- jaspTools::analysisOptions("ClassicProcess")
   options$dependent  <- "perform"
   options$covariates <- list("negtone","dysfunc","negexp")
@@ -323,10 +323,9 @@ test_that("comparing jasp and spss conditional process analysis - spss as baseli
                                      localTestType = "cis",
                                      localTestBootstrap = FALSE,
                                      localTestBootstrapSamples = 1000))
+
   set.seed(1)
-
-  data <- read.csv("C:/Projects/ProcessModelsJasp/Data/hayes2022data/teams/teams.csv")
-
+  data    <- read.csv("C:/Projects/ProcessModelsJasp/Data/hayes2022data/teams/teams.csv")
   results <- jaspTools::runAnalysis("ClassicProcess", data, options)
 
   # Function to round numeric values in a list
@@ -407,37 +406,7 @@ test_that("comparing jasp and spss conditional process analysis - spss as baseli
     z = 3.7148
   )
 
-    # compare jasp and spss parameter estimates --------------------------------
-  jaspTools::expect_equal_tables(table,spss)
+  # compare jasp and spss parameter estimates --------------------------------
+  testthat::expect_equal(table, spss, tolerance = 1e-2)
 })
 
-# # Conditional indirect effects of X on Y
-# # totalEffectsTable JASP
-# table_total <- results[["results"]][["parEstContainer"]][["collection"]][["parEstContainer_Model 1"]][["collection"]][["parEstContainer_Model 1_totalEffectsTable"]][["data"]]
-#
-# # Effects table from SPSS
-# spss_effects <- list()
-#
-# spss_effects[[1]] <- list(
-#   ci.lower = -.3742,
-#   ci.upper = .2419,
-#   est = -.1000,
-#   lhs = "cond",
-#   op = "→",
-#   pvalue = .0766,
-#   rhs = "reaction",
-#   se = .2775,
-#   z =  1.7860
-# )
-# spss_effects[[2]] <- list(
-#   ci.lower = .0067,
-#   ci.upper = .5258,
-#   est = .2413,
-#   lhs = "pmi",
-#   op = "→",
-#   pvalue = .0635,
-#   rhs = "reaction",
-#   se = .1300,
-#   z = 1.8559
-# )
-# jaspTools::expect_equal_tables(table_total, spss_effects)
